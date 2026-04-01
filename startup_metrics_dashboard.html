@@ -1,0 +1,340 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.dash{font-family:var(--font-sans);padding-bottom:24px}
+.dash-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);border-radius:var(--border-radius-lg) var(--border-radius-lg) 0 0}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:26px;height:26px;background:#00C9A7;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.logo-name{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.logo-badge{font-size:10px;color:var(--color-text-secondary);background:var(--color-background-secondary);padding:2px 8px;border-radius:20px;border:0.5px solid var(--color-border-tertiary)}
+.header-right{display:flex;align-items:center;gap:12px}
+.period-sel{font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:6px;padding:5px 10px;color:var(--color-text-secondary);background:var(--color-background-primary);cursor:pointer}
+.live-badge{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary)}
+.live-dot{width:6px;height:6px;background:#00C9A7;border-radius:50%;animation:pulse-d 2s ease-in-out infinite}
+@keyframes pulse-d{0%,100%{opacity:1}50%{opacity:.35}}
+.kpi-strip{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;background:var(--color-border-tertiary)}
+.kpi-card{background:var(--color-background-primary);padding:14px 16px;cursor:pointer;transition:background .15s;border-bottom:2.5px solid transparent}
+.kpi-card:hover{background:var(--color-background-secondary)}
+.kpi-card.active{background:var(--color-background-secondary);border-bottom-color:#00C9A7}
+.kpi-lbl{font-size:10px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.kpi-val{font-family:var(--font-mono);font-size:20px;font-weight:500;color:var(--color-text-primary);line-height:1.1}
+.kpi-delta{font-size:10px;margin-top:4px}
+.up{color:#00C9A7}.dn{color:#E24B4A}.warn{color:#FFC107}
+.body{padding:16px;display:flex;flex-direction:column;gap:14px}
+.insights{display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-size:11px;padding:5px 10px;border-radius:20px;border:0.5px solid;cursor:pointer}
+.pill-g{background:rgba(0,201,167,.1);border-color:rgba(0,201,167,.35);color:#00C9A7}
+.pill-a{background:rgba(255,193,7,.1);border-color:rgba(255,193,7,.35);color:#d4950a}
+.pill-r{background:rgba(226,75,74,.1);border-color:rgba(226,75,74,.35);color:#E24B4A}
+.pill-b{background:rgba(55,138,221,.1);border-color:rgba(55,138,221,.35);color:#378ADD}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.tabs{display:flex;background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary)}
+.tab-btn{padding:11px 18px;font-size:12px;color:var(--color-text-secondary);border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.tab-btn:hover{color:var(--color-text-primary);background:var(--color-background-secondary)}
+.tab-btn.active{color:var(--color-text-primary);border-bottom-color:#00C9A7;background:var(--color-background-secondary)}
+.tab-panel{display:none;padding:18px;flex-direction:column;gap:16px}
+.tab-panel.active{display:flex}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.chart-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.chart-sub{font-size:11px;color:var(--color-text-secondary);margin-bottom:12px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--color-text-secondary);margin-bottom:10px}
+.leg-dot{width:10px;height:2px;border-radius:1px;display:inline-block}
+.cohort-tbl{width:100%;border-collapse:collapse;font-size:10px;font-family:var(--font-mono)}
+.cohort-tbl th{padding:5px 4px;text-align:center;font-size:9px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.3px}
+.cohort-tbl th:first-child,.cohort-tbl th:nth-child(2){text-align:left}
+.cohort-tbl td{padding:2px}
+.c-cell{display:block;padding:4px 3px;border-radius:3px;text-align:center;font-size:10px;font-weight:500;min-width:32px}
+.c-lbl{font-size:11px;color:var(--color-text-secondary);padding:4px 8px 4px 0;white-space:nowrap;text-align:left}
+.fn-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.fn-lbl{font-size:12px;color:var(--color-text-secondary);width:110px;flex-shrink:0}
+.fn-wrap{flex:1;height:26px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden}
+.fn-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:10px;font-size:11px;font-weight:500;font-family:var(--font-mono);color:#fff;width:0;transition:width .9s cubic-bezier(.16,1,.3,1)}
+.fn-pct{font-size:11px;font-family:var(--font-mono);color:var(--color-text-secondary);width:38px;text-align:right;flex-shrink:0}
+.fn-drop{font-size:10px;color:#E24B4A;width:42px;text-align:right;flex-shrink:0}
+.m-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.m-row:last-child{border-bottom:none}
+.m-name{font-size:12px;color:var(--color-text-secondary)}
+.m-val{font-size:13px;font-weight:500;font-family:var(--font-mono);color:var(--color-text-primary)}
+.big-num{font-size:34px;font-weight:500;font-family:var(--font-mono);color:var(--color-text-primary);padding:10px 0 4px}
+.nps-bar-wrap{width:100%;height:8px;border-radius:4px;overflow:hidden;background:linear-gradient(to right,#E24B4A 0 33%,#FFC107 33% 55%,#00C9A7 55% 100%);margin:12px 0 5px;position:relative}
+.nps-marker{position:absolute;top:-4px;width:16px;height:16px;background:var(--color-background-primary);border:2px solid var(--color-text-primary);border-radius:50%;transform:translateX(-50%);left:73.5%}
+.nps-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--color-text-secondary)}
+@media(max-width:700px){.kpi-strip{grid-template-columns:repeat(3,minmax(0,1fr))}.g2,.g3{grid-template-columns:1fr}}
+</style>
+
+<div class="dash">
+<div class="dash-header">
+  <div class="logo">
+    <div class="logo-mark"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="7" width="3" height="6" rx="1" fill="white"/><rect x="5.5" y="4" width="3" height="9" rx="1" fill="white"/><rect x="10" y="1" width="3" height="12" rx="1" fill="white"/></svg></div>
+    <span class="logo-name">Metrics HQ</span>
+    <span class="logo-badge">PM · Analytics · Growth</span>
+  </div>
+  <div class="header-right">
+    <select class="period-sel"><option value="3">Last 3 months</option><option value="6">Last 6 months</option><option value="12" selected>Last 12 months</option></select>
+    <div class="live-badge"><div class="live-dot"></div>Live · Mar 30 2026</div>
+  </div>
+</div>
+
+<div class="kpi-strip">
+  <div class="kpi-card active"><div class="kpi-lbl">DAU</div><div class="kpi-val">8,542</div><div class="kpi-delta up">↑ 14.2% MoM</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">MAU</div><div class="kpi-val">42,180</div><div class="kpi-delta up">↑ 9.8% MoM</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">DAU/MAU</div><div class="kpi-val">20.3%</div><div class="kpi-delta up">↑ 4.1pp — sticky</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">MRR</div><div class="kpi-val">$89.4K</div><div class="kpi-delta up">↑ 18.7% MoM</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">Churn</div><div class="kpi-val">3.2%</div><div class="kpi-delta up">↓ All-time low</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">LTV / CAC</div><div class="kpi-val">4.1×</div><div class="kpi-delta up">↑ Healthy ratio</div></div>
+</div>
+
+<div class="body">
+  <div class="insights">
+    <span class="pill pill-g">✓ Stickiness crossed 20% threshold</span>
+    <span class="pill pill-g">✓ Churn at all-time low (3.2%)</span>
+    <span class="pill pill-a">⚠ Day-7 retention slipped 2pp this cohort</span>
+    <span class="pill pill-b">→ Power users drive 68% of revenue</span>
+    <span class="pill pill-r">✗ CAC rose 12% — review paid channels</span>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="sw('overview',this)">Overview</button>
+      <button class="tab-btn" onclick="sw('retention',this)">Retention</button>
+      <button class="tab-btn" onclick="sw('revenue',this)">Revenue</button>
+      <button class="tab-btn" onclick="sw('funnel',this)">Funnel</button>
+      <button class="tab-btn" onclick="sw('health',this)">Health</button>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div id="tab-overview" class="tab-panel active">
+      <div class="g2">
+        <div>
+          <div class="chart-title">DAU / MAU Trend</div>
+          <div class="chart-sub">Monthly vs daily active users over 12 months</div>
+          <div class="legend">
+            <span style="display:flex;align-items:center;gap:5px"><span class="leg-dot" style="background:#00C9A7;height:2px"></span>DAU</span>
+            <span style="display:flex;align-items:center;gap:5px"><span class="leg-dot" style="background:#378ADD;height:2px"></span>MAU</span>
+          </div>
+          <div style="position:relative;height:190px"><canvas id="c-dauMau"></canvas></div>
+        </div>
+        <div>
+          <div class="chart-title">Stickiness (DAU/MAU %)</div>
+          <div class="chart-sub">Product engagement depth — target is >20%</div>
+          <div style="height:32px"></div>
+          <div style="position:relative;height:190px"><canvas id="c-sticky"></canvas></div>
+        </div>
+      </div>
+      <div>
+        <div class="chart-title">New Users Acquired per Month</div>
+        <div style="position:relative;height:140px;margin-top:8px"><canvas id="c-newu"></canvas></div>
+      </div>
+    </div>
+
+    <!-- RETENTION -->
+    <div id="tab-retention" class="tab-panel">
+      <div>
+        <div class="chart-title">Cohort Retention Heatmap</div>
+        <div class="chart-sub">% of users active in each month post-signup — darker teal = stronger retention</div>
+        <div style="overflow-x:auto;margin-top:12px"><table class="cohort-tbl" id="cohort-tbl"></table></div>
+      </div>
+      <div>
+        <div class="chart-title">Day 1 · Day 7 · Day 30 Retention by Cohort</div>
+        <div class="legend" style="margin-top:6px">
+          <span style="display:flex;align-items:center;gap:5px"><span class="leg-dot" style="background:#00C9A7;height:2px"></span>Day 1</span>
+          <span style="display:flex;align-items:center;gap:5px"><span class="leg-dot" style="background:#378ADD;height:2px"></span>Day 7</span>
+          <span style="display:flex;align-items:center;gap:5px"><span class="leg-dot" style="background:#FFC107;height:2px"></span>Day 30</span>
+        </div>
+        <div style="position:relative;height:180px"><canvas id="c-retLine"></canvas></div>
+      </div>
+    </div>
+
+    <!-- REVENUE -->
+    <div id="tab-revenue" class="tab-panel">
+      <div class="g2">
+        <div>
+          <div class="chart-title">MRR Growth</div>
+          <div class="chart-sub">Monthly recurring revenue — 12-month trajectory</div>
+          <div style="position:relative;height:210px;margin-top:8px"><canvas id="c-mrr"></canvas></div>
+        </div>
+        <div>
+          <div class="chart-title">Revenue by Plan Tier</div>
+          <div class="chart-sub">Current month breakdown</div>
+          <div style="position:relative;height:170px;margin-top:8px"><canvas id="c-donut"></canvas></div>
+          <div class="legend" style="margin-top:10px">
+            <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#00C9A7;display:inline-block"></span>Enterprise 44%</span>
+            <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#378ADD;display:inline-block"></span>Pro 33%</span>
+            <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#FFC107;display:inline-block"></span>Starter 23%</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="chart-title">MRR Movement — Waterfall</div>
+        <div class="chart-sub">New business · Expansion · Contraction · Churn vs prior month</div>
+        <div style="position:relative;height:160px;margin-top:8px"><canvas id="c-waterfall"></canvas></div>
+      </div>
+    </div>
+
+    <!-- FUNNEL -->
+    <div id="tab-funnel" class="tab-panel">
+      <div>
+        <div class="chart-title">Activation Funnel — March 2026</div>
+        <div class="chart-sub">User journey from visitor to power user. Drop % vs prior stage shown in red.</div>
+        <div id="funnel-viz" style="margin-top:16px"></div>
+      </div>
+      <div class="g2">
+        <div>
+          <div class="chart-title">Activation Rate Trend</div>
+          <div class="chart-sub">Users completing core action within 7 days</div>
+          <div style="position:relative;height:170px;margin-top:8px"><canvas id="c-act"></canvas></div>
+        </div>
+        <div>
+          <div class="chart-title">Feature Adoption</div>
+          <div class="chart-sub">% of active users using each feature</div>
+          <div style="position:relative;height:170px;margin-top:8px"><canvas id="c-feat"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HEALTH -->
+    <div id="tab-health" class="tab-panel">
+      <div class="g3">
+        <div class="card" style="padding:18px">
+          <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:4px">NPS Score</div>
+          <div class="big-num" style="color:var(--color-text-primary)">47</div>
+          <div style="font-size:11px;color:#00C9A7;margin-bottom:4px">✓ Above industry avg (32)</div>
+          <div class="nps-bar-wrap"><div class="nps-marker"></div></div>
+          <div class="nps-labels"><span>Detractors</span><span>Passives</span><span>Promoters</span></div>
+          <div style="margin-top:12px">
+            <div class="m-row"><span class="m-name">Promoters</span><span class="m-val up">62%</span></div>
+            <div class="m-row"><span class="m-name">Passives</span><span class="m-val warn">23%</span></div>
+            <div class="m-row"><span class="m-name">Detractors</span><span class="m-val dn">15%</span></div>
+          </div>
+        </div>
+        <div class="card" style="padding:18px">
+          <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:4px">LTV / CAC Ratio</div>
+          <div class="big-num">4.1<span style="font-size:18px;color:var(--color-text-secondary)">×</span></div>
+          <div style="font-size:11px;color:#00C9A7;margin-bottom:10px">✓ Healthy — target is &gt;3×</div>
+          <div class="m-row"><span class="m-name">Avg LTV</span><span class="m-val">$1,840</span></div>
+          <div class="m-row"><span class="m-name">Avg CAC</span><span class="m-val">$448</span></div>
+          <div class="m-row"><span class="m-name">Payback period</span><span class="m-val">5.2 mo</span></div>
+          <div class="m-row"><span class="m-name">ARPU</span><span class="m-val">$21.2</span></div>
+        </div>
+        <div class="card" style="padding:18px">
+          <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:4px">Churn Breakdown</div>
+          <div class="big-num" style="color:#00C9A7">3.2<span style="font-size:18px;color:var(--color-text-secondary)">%</span></div>
+          <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:10px">Monthly churn — all-time low</div>
+          <div class="m-row"><span class="m-name">Voluntary</span><span class="m-val">2.1%</span></div>
+          <div class="m-row"><span class="m-name">Involuntary</span><span class="m-val">1.1%</span></div>
+          <div class="m-row"><span class="m-name">Revenue churn</span><span class="m-val warn">4.8%</span></div>
+          <div class="m-row"><span class="m-name">Net Rev. Retention</span><span class="m-val up">108%</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="chart-title">Churn Rate Over Time</div>
+        <div class="chart-sub">Monthly churn improving consistently — target is &lt;3%</div>
+        <div style="position:relative;height:150px;margin-top:8px"><canvas id="c-churn"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const MO=['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+const DAU=[1200,1580,2100,2800,3400,4100,4900,5600,6300,7100,7800,8542];
+const MAU=[8000,9500,11200,13800,16500,20000,24000,28500,33000,36800,39500,42180];
+const STICK=DAU.map((d,i)=>+(d/MAU[i]*100).toFixed(1));
+const NEWU=[3200,4100,5800,7200,8500,9800,11200,12500,13800,10500,9200,8100];
+const MRR=[12000,14800,18200,22500,28000,34500,43000,53000,63500,72000,80000,89400];
+const CHURN=[8.0,7.5,7.1,6.5,5.9,5.4,4.8,4.5,4.2,3.9,3.6,3.2];
+const ACT=[28,30,31,33,36,38,40,42,43,45,46,48];
+const COHORTS=[
+  {n:'Apr \'25',u:3200,r:[100,42,28,22,18,16,15,14,13,13,12,12]},
+  {n:'May \'25',u:4100,r:[100,44,30,24,20,18,17,16,15,14,14,null]},
+  {n:'Jun \'25',u:5800,r:[100,45,32,26,22,19,18,17,16,15,null,null]},
+  {n:'Jul \'25',u:7200,r:[100,46,33,27,23,20,19,18,17,null,null,null]},
+  {n:'Aug \'25',u:8500,r:[100,48,35,28,24,21,20,19,null,null,null,null]},
+  {n:'Sep \'25',u:9800,r:[100,49,36,29,25,22,21,null,null,null,null,null]},
+  {n:'Oct \'25',u:11200,r:[100,50,37,30,26,23,null,null,null,null,null,null]},
+  {n:'Nov \'25',u:12500,r:[100,51,38,31,27,null,null,null,null,null,null,null]},
+  {n:'Dec \'25',u:13800,r:[100,52,39,32,null,null,null,null,null,null,null,null]},
+  {n:'Jan \'26',u:10500,r:[100,50,37,null,null,null,null,null,null,null,null,null]},
+  {n:'Feb \'26',u:9200,r:[100,48,null,null,null,null,null,null,null,null,null,null]},
+  {n:'Mar \'26',u:8100,r:[100,null,null,null,null,null,null,null,null,null,null,null]},
+];
+const T='#00C9A7',B='#378ADD',A='#FFC107',R='#E24B4A',GR='rgba(136,135,128,0.12)',GY='#888780';
+const BASE={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:GR},ticks:{color:GY,font:{size:10}}},y:{grid:{color:GR},ticks:{color:GY,font:{size:10}}}}};
+
+new Chart(document.getElementById('c-dauMau'),{type:'line',data:{labels:MO,datasets:[
+  {label:'DAU',data:DAU,borderColor:T,borderWidth:2,pointRadius:3,pointBackgroundColor:T,tension:.4,fill:true,backgroundColor:'rgba(0,201,167,.08)'},
+  {label:'MAU',data:MAU,borderColor:B,borderWidth:2,pointRadius:3,pointBackgroundColor:B,tension:.4,yAxisID:'y2'}
+]},options:{...BASE,scales:{x:{grid:{color:GR},ticks:{color:GY,font:{size:10}}},y:{grid:{color:GR},ticks:{color:T,font:{size:10},callback:v=>v>=1000?(v/1000).toFixed(0)+'K':v}},y2:{position:'right',grid:{display:false},ticks:{color:B,font:{size:10},callback:v=>v>=1000?(v/1000).toFixed(0)+'K':v}}}}});
+
+new Chart(document.getElementById('c-sticky'),{type:'line',data:{labels:MO,datasets:[{label:'DAU/MAU %',data:STICK,borderColor:A,borderWidth:2,pointRadius:3,pointBackgroundColor:A,tension:.4,fill:true,backgroundColor:'rgba(255,193,7,.08)'}]},options:{...BASE,scales:{x:{grid:{color:GR},ticks:{color:GY,font:{size:10}}},y:{grid:{color:GR},ticks:{color:GY,font:{size:10},callback:v=>v+'%'},suggestedMin:12,suggestedMax:24}}}});
+
+new Chart(document.getElementById('c-newu'),{type:'bar',data:{labels:MO,datasets:[{label:'New Users',data:NEWU,backgroundColor:MO.map((_,i)=>i===11?T:'rgba(0,201,167,.35)'),borderRadius:4,borderSkipped:false}]},options:{...BASE,scales:{x:{grid:{display:false},ticks:{color:GY,font:{size:10}}},y:{grid:{color:GR},ticks:{color:GY,font:{size:10},callback:v=>(v/1000).toFixed(0)+'K'}}}}});
+
+new Chart(document.getElementById('c-retLine'),{type:'line',data:{labels:MO.slice(0,11),datasets:[
+  {label:'Day 1',data:COHORTS.slice(0,11).map(c=>c.r[1]),borderColor:T,borderWidth:2,pointRadius:3,pointBackgroundColor:T,tension:.4},
+  {label:'Day 7',data:COHORTS.slice(0,10).map(c=>c.r[3]).concat([null]),borderColor:B,borderWidth:2,pointRadius:3,pointBackgroundColor:B,tension:.4},
+  {label:'Day 30',data:COHORTS.slice(0,7).map(c=>c.r[6]).concat(Array(4).fill(null)),borderColor:A,borderWidth:2,pointRadius:3,pointBackgroundColor:A,tension:.4}
+]},options:{...BASE,scales:{x:{grid:{color:GR},ticks:{color:GY,font:{size:10}}},y:{grid:{color:GR},ticks:{color:GY,font:{size:10},callback:v=>v+'%'},suggestedMin:0,suggestedMax:60}}}});
+
+new Chart(document.getElementById('c-mrr'),{type:'line',data:{labels:MO,datasets:[{label:'MRR',data:MRR,borderColor:T,borderWidth:2.5,pointRadius:4,pointBackgroundColor:T,tension:.4,fill:true,backgroundColor:'rgba(0,201,167,.1)'}]},options:{...BASE,scales:{x:{grid:{color:GR},ticks:{color:GY,font:{size:10}}},y:{grid:{color:GR},ticks:{color:GY,font:{size:10},callback:v=>'$'+(v/1000).toFixed(0)+'K'}}}}});
+
+new Chart(document.getElementById('c-donut'),{type:'doughnut',data:{labels:['Enterprise','Pro','Starter'],datasets:[{data:[44,33,23],backgroundColor:[T,B,A],borderWidth:0,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'72%'}});
+
+new Chart(document.getElementById('c-waterfall'),{type:'bar',data:{labels:['Start MRR','New Biz','Expansion','Contraction','Churn','End MRR'],datasets:[{data:[72000,14200,8600,-2100,-3300,89400],backgroundColor:[B,T,T,R,R,T],borderRadius:4}]},options:{...BASE,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>'$'+(ctx.parsed.y/1000).toFixed(1)+'K'}}},scales:{x:{grid:{display:false},ticks:{color:GY,font:{size:10},maxRotation:25}},y:{grid:{color:GR},ticks:{color:GY,font:{size:10},callback:v=>'$'+(v/1000).toFixed(0)+'K'}}}}});
+
+new Chart(document.getElementById('c-act'),{type:'line',data:{labels:MO,datasets:[{label:'Activation %',data:ACT,borderColor:T,borderWidth:2,pointRadius:3,pointBackgroundColor:T,tension:.4,fill:true,backgroundColor:'rgba(0,201,167,.08)'}]},options:{...BASE,scales:{x:{grid:{color:GR},ticks:{color:GY,font:{size:10}}},y:{grid:{color:GR},ticks:{color:GY,font:{size:10},callback:v=>v+'%'},suggestedMin:20,suggestedMax:55}}}});
+
+new Chart(document.getElementById('c-feat'),{type:'bar',data:{labels:['Analytics','Integrations','Reports','Alerts','API','Export'],datasets:[{data:[78,65,61,52,45,38],backgroundColor:[T,T,B,B,A,A].map(c=>c+'BB'),borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:GR},ticks:{color:GY,font:{size:10},callback:v=>v+'%'},max:100},y:{grid:{display:false},ticks:{color:GY,font:{size:10}}}}}});
+
+new Chart(document.getElementById('c-churn'),{type:'line',data:{labels:MO,datasets:[{label:'Churn %',data:CHURN,borderColor:R,borderWidth:2,pointRadius:3,pointBackgroundColor:R,tension:.4,fill:true,backgroundColor:'rgba(226,75,74,.08)'}]},options:{...BASE,scales:{x:{grid:{color:GR},ticks:{color:GY,font:{size:10}}},y:{grid:{color:GR},ticks:{color:GY,font:{size:10},callback:v=>v+'%'},min:0,suggestedMax:10}}}});
+
+// Cohort heatmap
+function retColor(v){
+  if(v===100)return'background:#378ADD;color:#e0f0ff';
+  const stops=[[0,'#3d0a0a'],[10,'#8b2020'],[20,'#b33b3b'],[30,'#cc8800'],[40,'#00917a'],[55,'#00C9A7'],[100,'#00e8c2']];
+  let lo=stops[0],hi=stops[stops.length-1];
+  for(let i=0;i<stops.length-1;i++){if(v>=stops[i][0]&&v<=stops[i+1][0]){lo=stops[i];hi=stops[i+1];break;}}
+  const t=(v-lo[0])/(hi[0]-lo[0]);
+  const ph=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+  const [lr,lg,lb]=ph(lo[1]);const[hr,hg,hb]=ph(hi[1]);
+  const r=Math.round(lr+t*(hr-lr)),g=Math.round(lg+t*(hg-lg)),b=Math.round(lb+t*(hb-lb));
+  const bright=(r*299+g*587+b*114)/1000;
+  return`background:rgb(${r},${g},${b});color:${bright>110?'#111':'#eee'}`;
+}
+let th='<thead><tr><th>Cohort</th><th>Users</th>';
+for(let i=0;i<=11;i++)th+=`<th>M${i}</th>`;
+th+='</tr></thead><tbody>';
+COHORTS.forEach(c=>{
+  th+=`<tr><td class="c-lbl">${c.n}</td><td class="c-lbl" style="font-family:var(--font-mono)">${(c.u/1000).toFixed(1)}K</td>`;
+  c.r.forEach(v=>{
+    if(v===null)th+='<td><span class="c-cell" style="color:var(--color-text-secondary);opacity:.3">—</span></td>';
+    else th+=`<td><span class="c-cell" style="${retColor(v)}">${v}%</span></td>`;
+  });
+  th+='</tr>';
+});
+document.getElementById('cohort-tbl').innerHTML=th+'</tbody>';
+
+// Funnel
+const STEPS=[
+  {l:'Visitors',n:285000,c:B},{l:'Sign-ups',n:42180,c:'#2970b8'},{l:'Activated',n:20246,c:T},
+  {l:'Core Action',n:13658,c:'#00b594'},{l:'Paid Users',n:7620,c:A},{l:'Power Users',n:2286,c:'#e8920f'},
+];
+const MAX=STEPS[0].n;
+document.getElementById('funnel-viz').innerHTML=STEPS.map((s,i)=>{
+  const pct=(s.n/MAX*100).toFixed(1);
+  const drop=i>0?((STEPS[i-1].n-s.n)/STEPS[i-1].n*100).toFixed(0):null;
+  return`<div class="fn-row"><div class="fn-lbl">${s.l}</div><div class="fn-wrap"><div class="fn-bar" data-w="${pct}" style="background:${s.c}">${s.n.toLocaleString()}</div></div><div class="fn-pct">${pct}%</div>${drop?`<div class="fn-drop">-${drop}%</div>`:'<div style="width:42px"></div>'}`;
+}).join('');
+setTimeout(()=>document.querySelectorAll('.fn-bar').forEach(b=>b.style.width=b.dataset.w+'%'),80);
+
+function sw(name,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='funnel')setTimeout(()=>document.querySelectorAll('.fn-bar').forEach(b=>b.style.width=b.dataset.w+'%'),80);
+}
+</script>
